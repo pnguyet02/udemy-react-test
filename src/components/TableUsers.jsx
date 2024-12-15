@@ -4,14 +4,19 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../services/UserServices";
 import ReactPaginate from "react-paginate";
 import ModalAddNews from "./ModalAddNew";
+import ModalEditUser from "./ModalEditUser";
 
 const TableUsers = (props) => {
   const [listUsers, setListUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+  const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+  const [dataUserEdit, setDataUserEdit] = useState({});
+
   const handleClose = () => {
     setIsShowModalAddNew(false);
+    setIsShowModalEdit(false);
   };
 
   const handleUpdateTable = (user) => {
@@ -32,9 +37,14 @@ const TableUsers = (props) => {
       setTotalPages(res.total_pages);
     }
   };
-  console.log(listUsers);
+  // console.log(listUsers);
   const handlePageClick = (event) => {
     getUsers(+event.selected + 1);
+  };
+  const handleEditUser = (user) => {
+    console.log(user);
+    setDataUserEdit(user);
+    setIsShowModalEdit(true);
   };
   return (
     <>
@@ -56,6 +66,7 @@ const TableUsers = (props) => {
             <th>Email</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -68,6 +79,15 @@ const TableUsers = (props) => {
                   <td>{item.email}</td>
                   <td>{item.first_name}</td>
                   <td>{item.last_name}</td>
+                  <td>
+                    <button
+                      className="btn btn-warning mx-3"
+                      onClick={() => handleEditUser(item)}
+                    >
+                      Edit
+                    </button>
+                    <button className="btn btn-danger">Delete</button>
+                  </td>
                 </tr>
               );
             })}
@@ -96,6 +116,11 @@ const TableUsers = (props) => {
         show={isShowModalAddNew}
         handleClose={handleClose}
         handleUpdateTable={handleUpdateTable}
+      />
+      <ModalEditUser
+        show={isShowModalEdit}
+        handleClose={handleClose}
+        dataUserEdit={dataUserEdit}
       />
     </>
   );
