@@ -27,7 +27,13 @@ const ModalAddNews = (props) => {
   //
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        //backdrop, keyboard: modal không đóng khi kích ra ngoài
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Add new user</Modal.Title>
         </Modal.Header>
