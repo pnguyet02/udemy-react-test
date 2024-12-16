@@ -1,15 +1,28 @@
 import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { postCreateUser } from "../services/UserServices";
+import { putUpdateUser } from "../services/UserServices";
 import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 //
 const ModalEditUser = (props) => {
   const { show, handleClose, dataUserEdit } = props;
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
-  //
-  const handleEditUser = () => {};
+  //xử lý bất đồng bộ use async await
+  const handleEditUser = async () => {
+    let res = await putUpdateUser(name, job);
+    if (res && res.updateAt) {
+      //success
+      handleEditUserFromModal({
+        first_name: name,
+        id: dataUserEdit.id,
+      });
+      handleClose();
+      toast.success("update user success!");
+    }
+    // console.log(res);
+  };
   //   console.log(">>> check props: ", dataUserEdit);
   useEffect(() => {
     if (show) {
@@ -20,7 +33,7 @@ const ModalEditUser = (props) => {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit new user</Modal.Title>
+          <Modal.Title>Edit a user</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="body-add-new">
