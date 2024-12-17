@@ -32,7 +32,7 @@ const TableUsers = (props) => {
   const handleEditUserFromModal = (user) => {
     let cloneListUsers = _.cloneDeep(listUsers);
     let index = listUsers.findIndex((item) => item.id === user.id);
-    listUsers[(index.first_name = user.first_name)];
+    cloneListUsers[index].first_name = user.first_name;
     setListUsers(cloneListUsers);
   };
 
@@ -63,6 +63,12 @@ const TableUsers = (props) => {
   const handleDeleteUser = (user) => {
     setIsShowModalDelete(true);
     setDataUserDelete(user);
+  };
+  const handleDeleteUserFromModal = (user) => {
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = cloneListUsers.filter((item) => item.id !== user.id);
+
+    setListUsers(cloneListUsers);
   };
   return (
     <>
@@ -150,6 +156,7 @@ const TableUsers = (props) => {
         show={isShowModalDelete}
         handleClose={handleClose}
         dataUserDelelte={dataUserDelelte}
+        handleDeleteUserFromModal={handleDeleteUserFromModal}
       />
     </>
   );
