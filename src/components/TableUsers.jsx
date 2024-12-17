@@ -7,7 +7,7 @@ import ModalAddNews from "./ModalAddNew";
 import ModalEditUser from "./ModalEditUser";
 import ModalComfirm from "./ModalComfirm";
 
-import _ from "lodash";
+import _, { debounce } from "lodash";
 import "./tableUser.scss";
 
 const TableUsers = (props) => {
@@ -24,6 +24,7 @@ const TableUsers = (props) => {
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortField] = useState("id");
 
+  const [keyword, setKeyword] = useState("");
   const handleClose = () => {
     setIsShowModalAddNew(false);
     setIsShowModalEdit(false);
@@ -80,10 +81,24 @@ const TableUsers = (props) => {
     setSortField(sortField);
 
     let cloneListUsers = _.cloneDeep(listUsers);
+
     cloneListUsers = _.orderBy(cloneListUsers, [sortField], [sortBy]);
     setListUsers(cloneListUsers);
   };
   // console.log(sortBy, " ... ", sortField);
+  const handleSearch = debounce((event) => {
+    console.log(event.target.value);
+    let term = event.target.value;
+    if (term) {
+      let cloneListUsers = _.cloneDeep(listUsers);
+      cloneListUsers = cloneListUsers.filter((item) =>
+        item.email.includes(term)
+      );
+      setListUsers(cloneListUsers);
+    } else {
+      getUsers(1);
+    }
+  }, 300);
   return (
     <>
       <div className="my-3 add-new">
@@ -96,6 +111,14 @@ const TableUsers = (props) => {
         >
           ADD new user
         </button>
+      </div>
+      <div className="col-4 my-3">
+        <input
+          className="form-control"
+          placeholder="Search user by email..."
+          // value={keyword}
+          onChange={(event) => handleSearch(event)}
+        />
       </div>
       <Table striped bordered hover>
         <thead>
