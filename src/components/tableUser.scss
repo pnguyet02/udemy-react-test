@@ -6,3 +6,16 @@
     padding-top: 0 2px;
   }
 }
+.add-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Đảm bảo container con chiếm đủ chiều ngang */
+}
+.group-btn {
+  display: flex;
+  gap: 10px;
+  i {
+    padding: 0 2px;
+  }
+}
