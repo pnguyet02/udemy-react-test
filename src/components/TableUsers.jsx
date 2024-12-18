@@ -133,19 +133,19 @@ const TableUsers = (props) => {
       Papa.parse(file, {
         // header: true,
         complete: function (results) {
-          let rowCSV = results.data;
-          if (rowCSV.length > 0) {
-            if (rowCSV[0] && rowCSV[0].length === 3) {
+          let rawCSV = results.data;
+          if (rawCSV.length > 0) {
+            if (rawCSV[0] && rawCSV[0].length === 3) {
               if (
-                rowCSV[0][0] !== "email" ||
-                rowCSV[0][1] !== "first_name" ||
-                rowCSV[0][2] !== "last_name"
+                rawCSV[0][0] !== "email" ||
+                rawCSV[0][1] !== "first_name" ||
+                rawCSV[0][2] !== "last_name"
               ) {
                 toast.error("Wrong format header CSV file!");
               } else {
                 let result = [];
-                // console.log("check: ", rowCSV);
-                rowCSV.map((item, index) => {
+                // console.log("check: ", rawCSV);
+                rawCSV.map((item, index) => {
                   if (index > 0 && item.length === 3) {
                     let obj = {};
                     obj.email = item[0];
