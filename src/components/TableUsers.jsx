@@ -10,6 +10,8 @@ import ModalComfirm from "./ModalComfirm";
 import _, { debounce } from "lodash";
 import "./tableUser.scss";
 import { CSVLink, CSVDownload } from "react-csv";
+import Papa from "papaparse";
+import { toast } from "react-toastify";
 
 const TableUsers = (props) => {
   const [listUsers, setListUsers] = useState([]);
@@ -120,6 +122,52 @@ const TableUsers = (props) => {
       done();
     }
   };
+  const handleImportCSV = (event) => {
+    if (event.target && event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      if (file.type !== "text/csv") {
+        toast.error("Only accept csv files...");
+        return;
+      }
+      //Parse local csv file
+      Papa.parse(file, {
+        // header: true,
+        complete: function (results) {
+          let rowCSV = results.data;
+          if (rowCSV.length > 0) {
+            if (rowCSV[0] && rowCSV[0].length === 3) {
+              if (
+                rowCSV[0][0] !== "email" ||
+                rowCSV[0][1] !== "first_name" ||
+                rowCSV[0][2] !== "last_name"
+              ) {
+                toast.error("Wrong format header CSV file!");
+              } else {
+                let result = [];
+                // console.log("check: ", rowCSV);
+                rowCSV.map((item, index) => {
+                  if (index > 0 && item.length === 3) {
+                    let obj = {};
+                    obj.email = item[0];
+                    obj.first_name = item[1];
+                    obj.last_name = item[2];
+                    result.push(obj);
+                  }
+                });
+                setListUsers(result);
+                //console.log(">>>>check:", result);
+              }
+            } else {
+              toast.error("Wrong format CSV file!");
+            }
+          } else {
+            toast.error("No found data on CSV file!");
+          }
+          // console.log("Finished:", results.data);
+        },
+      });
+    }
+  };
   return (
     <>
       <div className="my-3 add-new">
@@ -131,7 +179,12 @@ const TableUsers = (props) => {
             <i className="fa-solid fa-file-import"></i>
             Import
           </label>
-          <input id="test" type="file" hidden />
+          <input
+            id="test"
+            type="file"
+            hidden
+            onChange={(event) => handleImportCSV(event)}
+          />
 
           <CSVLink
             filename={"user.csv"}
