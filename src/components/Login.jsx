@@ -1,27 +1,46 @@
 import { useState } from "react";
 import { loginApi } from "../services/UserServices";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [loadingApi, setLoadingApi] = useState(false);
+
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, []);
+
   const handleLogin = async () => {
     if (!email || !password) {
       toast.error("Email/Password is required!");
       return;
     }
+    setLoadingApi(true);
     let res = await loginApi(email, password);
     if (res && res.token) {
       localStorage.setItem("token", res.token);
+      navigate("/");
+    } else {
+      //error
+      if (res && res.status === 400) {
+        toast.error(res.data.error);
+      }
     }
-
-    console.log(">>>check: ", res);
+    setLoadingApi(false);
+    // console.log(">>>check: ", res);
   };
   return (
     <>
       <div className="login-container col-12 col-sm-4">
         <div className="title">Login</div>
-        <div className="text">Email or username</div>
+        <div className="text">Email or username (george.bluth@reqres.in)</div>
         <input
           type="text"
           placeholder="Email or username..."
@@ -48,6 +67,10 @@ const Login = () => {
           disabled={email && password ? false : true}
           onClick={() => handleLogin()}
         >
+          {/* nếu loadingApi(true) thì hiện <i></i> */}
+          {loadingApi && (
+            <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+          )}{" "}
           Login
         </button>
         <div className="back">
