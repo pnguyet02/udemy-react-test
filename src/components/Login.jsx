@@ -3,19 +3,22 @@ import { loginApi } from "../services/UserServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { UserContext } from "../context/userContext";
+import { useContext } from "react";
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [loadingApi, setLoadingApi] = useState(false);
+  const { loginContext } = useContext(UserContext);
 
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    if (token) {
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   let token = localStorage.getItem("token");
+  //   if (token) {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -25,7 +28,7 @@ const Login = () => {
     setLoadingApi(true);
     let res = await loginApi(email, password);
     if (res && res.token) {
-      localStorage.setItem("token", res.token);
+      loginContext(email, res.token);
       navigate("/");
     } else {
       //error
@@ -35,6 +38,9 @@ const Login = () => {
     }
     setLoadingApi(false);
     // console.log(">>>check: ", res);
+  };
+  const handleGoBack = () => {
+    navigate("/");
   };
   return (
     <>
@@ -68,13 +74,12 @@ const Login = () => {
           onClick={() => handleLogin()}
         >
           {/* nếu loadingApi(true) thì hiện <i></i> */}
-          {loadingApi && (
-            <i className="fa-solid fa-spinner fa-spin-pulse"></i>
-          )}{" "}
-          Login
+          {loadingApi && <i className="fa-solid fa-spinner fa-spin-pulse"></i>}
+          &nbsp;Login
         </button>
         <div className="back">
-          <i className="fa-solid fa-angles-left"></i> Go back
+          <i className="fa-solid fa-angles-left"></i>
+          <span onClick={() => handleGoBack()}>&nbsp;Go back</span>
         </div>
       </div>
     </>
