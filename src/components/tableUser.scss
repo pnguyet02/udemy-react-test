@@ -7,10 +7,10 @@
   }
 }
 .add-new {
-  display: flex;
+  // display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%; /* Đảm bảo container con chiếm đủ chiều ngang */
+  //width: 100%;
 }
 .group-btn {
   display: flex;
@@ -18,4 +18,11 @@
   i {
     padding: 0 2px;
   }
+}
+.customize-table {
+  width: inherit;
+  overflow-x: auto;
+}
+.pagination {
+  justify-content: center;
 }
